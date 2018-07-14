@@ -1,51 +1,55 @@
 #ifndef EX06_HPP_
 #define EX06_HPP_
 
-#include <iostream>
+#include <string>
 #include <sstream>
-
-template < typename T, typename U >
-class Tuple
-{
-	public:
-		T a;
-		U b;
-		std::string toString();
-};
+#include <typeinfo>
 
 template < typename T >
-static void trans(T &param, std::ostringstream &oss)
+static std::string toString(T const &value __attribute__((unused)))
 {
-	std::string typeName[3] = {typeid(int).name(), typeid(float).name(), typeid(std::string).name()};
-	std::string messageType[3] = {"int:", "float:", "string:\""};
-	bool flag = false;
-	for (int i = 0; i < 3; ++i) 
-	{
-		if (typeName[i] == typeid(param).name()) 
-		{
-			oss << messageType[i] << param;
-			if (i == 2)
-				oss << "\"";
-			if (i == 1)
-				oss << "f";
-			flag = true;
-			break;
-		}
-	}
-	if (!flag)
-		oss << "???";
+	std::ostringstream os;
+	os << "[???]";
+	return os.str();
 }
 
-template< typename T, typename U >
-std::string Tuple< T, U >::toString()
+static std::string toString(int const &value) __attribute__((unused));
+static std::string toString(float const &value) __attribute__((unused));
+static std::string toString(std::string const &value) __attribute__((unused));
+
+static std::string toString(int const &param)
 {
-	std::ostringstream oss;
-	oss << "[TUPLE [";
-	trans(this->a, oss);
-	oss << "] [";
-	trans(this->b, oss);
-	oss << "]]";
-	return oss.str();
+	std::ostringstream os;
+	os << "[int:" << param << "]";
+	return os.str();
 }
+
+static std::string toString(float const &param)
+{
+	std::ostringstream os;
+	os << "[float:" << param << "f]";
+	return os.str();
+}
+
+static std::string toString(std::string const &param)
+{
+	std::ostringstream os;
+	os << "[string:\"" << param << "\"]";
+	return os.str();
+}
+
+template < typename T, typename U = T >
+struct Tuple 
+{
+	T a;
+	U b;
+
+	std::string toString() const
+	{
+		std::ostringstream os;
+		os << "[TUPLE " << ::toString(a) << " " << ::toString(b) << "]";
+		return os.str();
+	}
+};
 
 #endif 
